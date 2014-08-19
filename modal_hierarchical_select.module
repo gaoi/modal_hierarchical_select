@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Implements hook_element_info(). Defines a Form API element.
+ */
+function modal_hierarchical_select_element_info() {
+  $types['modal_hierarchical_select'] = array(
+    '#input' => TRUE,
+  );
+  return $types;
+}
+
+/**
+ * Implements hook_field_widget_info(). Defines a Field Widget.
+ */
+function modal_hierarchical_select_field_widget_info() {
+  $fields['modal_hierarchical_select'] = array(
+    'label' => t('Modal Hierarchical Select'),
+    'field types' => array('taxonomy_term_reference'),
+    'behaviors' => array(
+      'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+    ),
+  );
+  return $fields;
+}
