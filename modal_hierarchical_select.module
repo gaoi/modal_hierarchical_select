@@ -7,6 +7,8 @@ function modal_hierarchical_select_element_info()
 {
   $types['modal_hierarchical_select'] = array(
     '#input' => TRUE,
+    '#theme' => array('modal_hierarchical_select'),
+    '#theme_wrappers' => array('form_element'),
   );
   return $types;
 }
