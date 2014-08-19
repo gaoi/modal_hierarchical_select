@@ -1,0 +1,5 @@
+name = Modal Hierarchical Select
+description = Provide a field widget and views exposed filter in the form of a modal hierarchical select.
+core = 7.x
+version = "0.0"
+files[] = modal_hierarchical_select.module
