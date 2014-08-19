@@ -18,10 +18,6 @@ function modal_hierarchical_select_element_info()
  */
 function modal_hierarchical_select_theme() {
   return array(
-    'modal_hierarchical_select_form_element' => array(
-      'file' => 'modal_hierarchical_select.theme.inc',
-      'variables' => array('element' => NULL, 'value' => NULL),
-    ),
     'modal_hierarchical_select' => array(
       'file' => 'modal_hierarchical_select.theme.inc',
       'render element' => 'element',
