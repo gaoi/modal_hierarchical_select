@@ -46,74 +46,30 @@ function modal_hierarchical_select_field_widget_info()
  */
 function modal_hierarchical_select_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
 {
-  $value_key = key($field['columns']);
 
-  $type = str_replace('modal_hierarchical_select_', '', $instance['widget']['type']);
-  $multiple = $field['cardinality'] > 1 || $field['cardinality'] == FIELD_CARDINALITY_UNLIMITED;
-  $required = $element['#required'];
-  $has_value = isset($items[0][$value_key]);
-  $properties = array('filter_xss' => FALSE, 'strip_tags' => FALSE, 'empty_option' => FALSE);
+  drupal_add_css(drupal_get_path('module', 'modal_hierarchical_select') . '/modal_hierarchical_select.css');
 
-  $entity_type = $element['#entity_type'];
-  $entity = $element['#entity'];
-
-  // Prepare the list of options.
-  $options = _modal_hierarchical_select_get_options($field, $instance, $properties, $entity_type, $entity);
-
-  // Put current field values in shape.
-  $default_value = _modal_hierarchical_select_storage_to_form($items, $options, $value_key, $properties);
-
-  $element += array(
-    '#type' => 'checkboxes',
-    '#default_value' => $default_value,
-    '#options' => $options,
-  );
-
-  $element += array(
-    '#value_key' => $value_key,
-    '#element_validate' => array('options_field_widget_validate'),
-    '#properties' => $properties,
-  );
-
-  return $element;
-}
-
-
-/**
- * Collects the options for a field.
- */
-function _modal_hierarchical_select_get_options($field, $instance, $properties, $entity_type, $entity) {
-  // Get the list of options.
-  $options = _modal_hierarchical_select_list($field, $instance, $entity_type, $entity);
-
-  // Sanitize the options.
-  _options_prepare_options($options, $properties);
-
-  return $options;
-}
-
-
-/**
- * Transforms stored field values into the format the widgets need.
- */
-function _modal_hierarchical_select_storage_to_form($items, $options, $column, $properties) {
-  $items_transposed = options_array_transpose($items);
-  $values = (isset($items_transposed[$column]) && is_array($items_transposed[$column])) ? $items_transposed[$column] : array();
-  $values = array_values(array_intersect($values, array_keys($options)));
-  return $values;
-}
-
-
-function _modal_hierarchical_select_list($field, $instance, $entity_type, $entity) {
-  $options = array();
+  $terms = array();
   foreach ($field['settings']['allowed_values'] as $tree) {
-    $terms = taxonomy_get_tree(taxonomy_vocabulary_machine_name_load($tree['vocabulary'])->vid, $tree['parent']);
-    if ($terms) {
-      foreach ($terms as $term) {
-        $options[$term->tid] = str_repeat('* ', $term->depth) . $term->name;
-      }
-    }
+    $terms += taxonomy_get_tree(taxonomy_vocabulary_machine_name_load($tree['vocabulary'])->vid, $tree['parent']);
   }
 
-  return $options;
+  print_r($items);
+
+  foreach ($terms as $term) {
+    $parent_classes = '';
+    foreach ($term->parents as $parent) {
+      $parent_classes .= 'parent-' . $parent . ' ';
+    }
+
+    $element['modal-hierarchical-select-item-' . $term->tid] = array(
+      '#title' => $term->name,
+      '#type' => 'checkbox',
+      '#prefix' => '<div class="modal-hierarchical-select-item depth-' . $term->depth . ' ' . $parent_classes . '">',
+      '#suffix' => '</div>',
+      '#default_value' => in_array(array('tid' => $term->tid), $items),
+    );
+  }
+
+  return $element;
 }
