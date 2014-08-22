@@ -47,6 +47,10 @@ function modal_hierarchical_select_field_widget_info()
 function modal_hierarchical_select_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
 {
 
+  print_r('<pre>');
+  print_r($items);
+  print_r('</pre>');
+
   drupal_add_css(drupal_get_path('module', 'modal_hierarchical_select') . '/modal_hierarchical_select.css');
 
   $terms = array();
@@ -54,21 +58,24 @@ function modal_hierarchical_select_field_widget_form(&$form, &$form_state, $fiel
     $terms += taxonomy_get_tree(taxonomy_vocabulary_machine_name_load($tree['vocabulary'])->vid, $tree['parent']);
   }
 
-  print_r($items);
-
+  $count = 0;
   foreach ($terms as $term) {
     $parent_classes = '';
     foreach ($term->parents as $parent) {
       $parent_classes .= 'parent-' . $parent . ' ';
     }
 
-    $element['modal-hierarchical-select-item-' . $term->tid] = array(
+    $element[$term->tid] = array(
+      '#default_value' => $term->tid,
       '#title' => $term->name,
       '#type' => 'checkbox',
       '#prefix' => '<div class="modal-hierarchical-select-item depth-' . $term->depth . ' ' . $parent_classes . '">',
       '#suffix' => '</div>',
-      '#default_value' => in_array(array('tid' => $term->tid), $items),
+      '#return_value' => $term->tid,
+      '#default_value' => in_array($term->tid, $items),
     );
+
+    $count++;
   }
 
   return $element;
