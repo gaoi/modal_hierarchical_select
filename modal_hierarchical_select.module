@@ -14,19 +14,6 @@ function modal_hierarchical_select_element_info()
 }
 
 /**
- * Implements hook_theme().
- */
-function modal_hierarchical_select_theme()
-{
-  return array(
-    'modal_hierarchical_select' => array(
-      'file' => 'modal_hierarchical_select.theme.inc',
-      'render element' => 'element',
-    ),
-  );
-}
-
-/**
  * Implements hook_field_widget_info(). Defines a Field Widget.
  */
 function modal_hierarchical_select_field_widget_info()
@@ -46,10 +33,6 @@ function modal_hierarchical_select_field_widget_info()
  */
 function modal_hierarchical_select_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element)
 {
-
-  print_r('<pre>');
-  print_r($items);
-  print_r('</pre>');
 
   drupal_add_css(drupal_get_path('module', 'modal_hierarchical_select') . '/modal_hierarchical_select.css');
 
